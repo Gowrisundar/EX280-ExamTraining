@@ -1477,6 +1477,133 @@ Hello OpenShift!
 sh-4.4$ 
 
 
+[student@workstation ~]$ oc new-project space
+Now using project "space" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc whoami
+jobs
+[student@workstation ~]$ oc new-app --name=gamma --image=quay.io/redhattraining/hello-world-nginx
+--> Found container image 44eaa13 (6 years old) from quay.io for "quay.io/redhattraining/hello-world-nginx"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "gamma:latest" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "gamma" created
+    deployment.apps "gamma" created
+    service "gamma" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/gamma' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc get sc
+NAME                    PROVISIONER                                   RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+lvms-vg1                topolvm.io                                    Delete          WaitForFirstConsumer   true                   568d
+nfs-storage (default)   k8s-sigs.io/nfs-subdir-external-provisioner   Delete          Immediate              false                  590d
+[student@workstation ~]$ oc describe sc
+Name:                  lvms-vg1
+IsDefaultClass:        No
+Annotations:           description=Provides RWO and RWOP Filesystem & Block volumes
+Provisioner:           topolvm.io
+Parameters:            csi.storage.k8s.io/fstype=xfs,topolvm.io/device-class=vg1
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+
+
+Name:                  nfs-storage
+IsDefaultClass:        Yes
+Annotations:           storageclass.kubernetes.io/is-default-class=true
+Provisioner:           k8s-sigs.io/nfs-subdir-external-provisioner
+Parameters:            archiveOnDelete=false
+AllowVolumeExpansion:  <unset>
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+[student@workstation ~]$ oc describe sc nfs-storage
+Name:                  nfs-storage
+IsDefaultClass:        Yes
+Annotations:           storageclass.kubernetes.io/is-default-class=true
+Provisioner:           k8s-sigs.io/nfs-subdir-external-provisioner
+Parameters:            archiveOnDelete=false
+AllowVolumeExpansion:  <unset>
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+[student@workstation ~]$ oc get sc nfs-storage -o yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  creationTimestamp: "2024-01-23T12:24:31Z"
+  name: nfs-storage
+  resourceVersion: "18797"
+  uid: 221c980f-eac2-4aaf-a05c-eed8922bd600
+parameters:
+  archiveOnDelete: "false"
+provisioner: k8s-sigs.io/nfs-subdir-external-provisioner
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+[student@workstation ~]$ oc get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                                     STORAGECLASS   REASON   AGE
+gamma-pv                                   1Gi        RWX            Delete           Available                                             slow                    12s
+pvc-102bb7ea-59ac-46ca-ba2f-dab2d6b9b0d9   20Gi       RWX            Delete           Bound       openshift-image-registry/registry-claim   nfs-storage             590d
+[student@workstation ~]$ oc get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                     STORAGECLASS   REASON   AGE
+gamma-pv                                   1Gi        RWX            Delete           Bound    space/gamma-pvc                           slow                    2m8s
+pvc-102bb7ea-59ac-46ca-ba2f-dab2d6b9b0d9   20Gi       RWX            Delete           Bound    openshift-image-registry/registry-claim   nfs-storage             590d
+[student@workstation ~]$ oc get pvc
+NAME        STATUS   VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+gamma-pvc   Bound    gamma-pv   1Gi        RWX            slow           28s
+[student@workstation ~]$ oc set volumes --type pvc --claim-name gamma-pvc --claim-size 1Gi --claim-
+--claim-class  (StorageClass to use for the persistent volume claim)
+--claim-mode   (Set the access mode of the claim to be created. Valid values are ReadWriteO…)
+[student@workstation ~]$ oc set volumes --type pvc --claim-name gamma-pvc --claim-size 1Gi --claim-
+--claim-class  (StorageClass to use for the persistent volume claim)
+--claim-mode   (Set the access mode of the claim to be created. Valid values are ReadWriteO…)
+[student@workstation ~]$ oc set volumes --type pvc --claim-name gamma-pvc --claim-size 1Gi --claim-
+--claim-class  (StorageClass to use for the persistent volume claim)
+--claim-mode   (Set the access mode of the claim to be created. Valid values are ReadWriteO…)
+[student@workstation ~]$ oc set volumes --type pvc --claim-name gamma-pvc --claim-size 1Gi --claim-mode ReadWriteMany --mount-path /srv deployment gamma
+error: --type|--path|--configmap-name|--secret-name|--claim-name|--source|--default-mode|--overwrite are only valid for --add operation
+[student@workstation ~]$ oc set volumes --type pvc --claim-name gamma-pvc --claim-size 1Gi --claim-mode ReadWriteMany --add --mount-path /srv deployment gamma
+info: Generated volume name: volume-m759f
+deployment.apps/gamma volume updated
+error: failed to patch volume update to pod template: persistentvolumeclaims "gamma-pvc" already exists
+[student@workstation ~]$ oc rsh gamma-6659b55ff4-xc2fg
+sh-4.4$ df -h
+Filesystem                    Size  Used Avail Use% Mounted on
+overlay                        50G   25G   25G  50% /
+tmpfs                          64M     0   64M   0% /dev
+shm                            64M     0   64M   0% /dev/shm
+tmpfs                         3.2G   93M  3.1G   3% /etc/passwd
+192.168.50.254:/exports-ocp4   40G  852M   40G   3% /srv
+/dev/vda4                      50G   25G   25G  50% /etc/hosts
+tmpfs                          15G   24K   15G   1% /run/secrets/kubernetes.io/serviceaccount
+tmpfs                         7.9G     0  7.9G   0% /proc/acpi
+tmpfs                         7.9G     0  7.9G   0% /proc/scsi
+tmpfs                         7.9G     0  7.9G   0% /sys/firmware
+sh-4.4$ 
+
+
 
 
 
