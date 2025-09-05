@@ -957,3 +957,169 @@ scala-9f487c596-fhttj   1/1     Running   0          13s
 scala-9f487c596-rpw87   1/1     Running   0          13s
 scala-9f487c596-zf5mb   1/1     Running   0          93s
 [student@workstation ~]$ 
+[student@workstation ~]$ ^C
+[student@workstation ~]$ ^C
+[student@workstation ~]$ ^C
+[student@workstation ~]$ ^C
+[student@workstation ~]$ oc create se
+secret          (Create a secret using specified subcommand)
+service         (Create a service using a specified subcommand)
+serviceaccount  (Create a service account with the specified name)
+[student@workstation ~]$ oc create secret generic magic --from-literal Decoder_Ring=ASDA142hfh-gfrhhueo-erfdk345v
+secret/magic created
+[student@workstation ~]$ oc get sec
+secrets
+securitycontextconstraints.security.openshift.io
+[student@workstation ~]$ oc get secrets 
+NAME                       TYPE                                  DATA   AGE
+builder-dockercfg-xg6s6    kubernetes.io/dockercfg               1      132m
+builder-token-75blb        kubernetes.io/service-account-token   4      132m
+default-dockercfg-xlddr    kubernetes.io/dockercfg               1      132m
+default-token-8df7c        kubernetes.io/service-account-token   4      132m
+deployer-dockercfg-fk4zz   kubernetes.io/dockercfg               1      132m
+deployer-token-98l2j       kubernetes.io/service-account-token   4      132m
+magic                      Opaque                                1      20s
+[student@workstation ~]$ oc get secrets magic -o yaml
+apiVersion: v1
+data:
+  Decoder_Ring: QVNEQTE0MmhmaC1nZnJoaHVlby1lcmZkazM0NXY=
+kind: Secret
+metadata:
+  creationTimestamp: "2025-09-05T06:53:27Z"
+  name: magic
+  namespace: math
+  resourceVersion: "149623"
+  uid: 7c9588ec-09bb-4df1-9b7b-fb7f6d6b51a1
+type: Opaque
+[student@workstation ~]$ oc describe secrets magic 
+Name:         magic
+Namespace:    math
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+Decoder_Ring:  29 bytes
+[student@workstation ~]$ oc new-app --name=qed --image=quay.io/redhattraining/hello-world-nginx
+--> Found container image 44eaa13 (6 years old) from quay.io for "quay.io/redhattraining/hello-world-nginx"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "qed:latest" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "qed" created
+    deployment.apps "qed" created
+    service "qed" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/qed' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc project
+Using project "math" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc set env --from s
+service.yaml      startSCENARIO.sh  
+[student@workstation ~]$ oc set env --from secret/magic deployment qed
+deployment.apps/qed updated
+[student@workstation ~]$ oc get pods
+pods                 pods.metrics.k8s.io  
+[student@workstation ~]$ oc get pods qed-5b85bcccfd-zhvwd | grep -i magic
+[student@workstation ~]$ oc get pods qed-5b85bcccfd-zhvwd | grep -i secret
+[student@workstation ~]$ oc get pods qed-5b85bcccfd-zhvwd | grep -i environment
+[student@workstation ~]$ oc get pods qed-5b85bcccfd-zhvwd | grep -A1 environment
+[student@workstation ~]$ oc get pods
+NAME                   READY   STATUS    RESTARTS   AGE
+qed-5b85bcccfd-zhvwd   1/1     Running   0          65s
+[student@workstation ~]$ oc describe pod
+poddisruptionbudgets.policy
+podmonitors.monitoring.coreos.com
+podnetworkconnectivitychecks.controlplane.operator.openshift.io
+pods
+pods.metrics.k8s.io
+podtemplates
+[student@workstation ~]$ oc describe pods qed-5b85bcccfd-zhvwd | grep -i environment
+    Environment:
+[student@workstation ~]$ oc describe pods qed-5b85bcccfd-zhvwd | grep -A1 environment
+[student@workstation ~]$ oc describe pods qed-5b85bcccfd-zhvwd | grep -A1 Environment
+    Environment:
+      DECODER_RING:  <set to the key 'Decoder_Ring' in secret 'magic'>  Optional: false
+[student@workstation ~]$ oc describe pods qed-5b85bcccfd-zhvwd
+Name:             qed-5b85bcccfd-zhvwd
+Namespace:        math
+Priority:         0
+Service Account:  default
+Node:             master01/192.168.50.10
+Start Time:       Fri, 05 Sep 2025 02:55:56 -0400
+Labels:           deployment=qed
+                  pod-template-hash=5b85bcccfd
+Annotations:      k8s.ovn.org/pod-networks:
+                    {"default":{"ip_addresses":["10.8.0.144/23"],"mac_address":"0a:58:0a:08:00:90","gateway_ips":["10.8.0.1"],"routes":[{"dest":"10.8.0.0/14",...
+                  k8s.v1.cni.cncf.io/network-status:
+                    [{
+                        "name": "ovn-kubernetes",
+                        "interface": "eth0",
+                        "ips": [
+                            "10.8.0.144"
+                        ],
+                        "mac": "0a:58:0a:08:00:90",
+                        "default": true,
+                        "dns": {}
+                    }]
+                  openshift.io/generated-by: OpenShiftNewApp
+                  openshift.io/scc: restricted-v2
+                  seccomp.security.alpha.kubernetes.io/pod: runtime/default
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.8.0.144
+IPs:
+  IP:           10.8.0.144
+Controlled By:  ReplicaSet/qed-5b85bcccfd
+Containers:
+  qed:
+    Container ID:   cri-o://a05660c2d89342502b84126a3890b0d5d5c2773e3754496b129e1fb8aa9f75fc
+    Image:          quay.io/redhattraining/hello-world-nginx@sha256:7f99ece5f39bf8d5d76a43cd9104a8d0a39f7135821b94bc1ebdc39cdc6dd63b
+    Image ID:       quay.io/redhattraining/hello-world-nginx@sha256:7f99ece5f39bf8d5d76a43cd9104a8d0a39f7135821b94bc1ebdc39cdc6dd63b
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Fri, 05 Sep 2025 02:55:57 -0400
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      DECODER_RING:  <set to the key 'Decoder_Ring' in secret 'magic'>  Optional: false
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m28vz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-m28vz:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+    ConfigMapName:           openshift-service-ca.crt
+    ConfigMapOptional:       <nil>
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason          Age    From               Message
+  ----    ------          ----   ----               -------
+  Normal  Scheduled       2m10s  default-scheduler  Successfully assigned math/qed-5b85bcccfd-zhvwd to master01
+  Normal  AddedInterface  2m9s   multus             Add eth0 [10.8.0.144/23] from ovn-kubernetes
+  Normal  Pulled          2m9s   kubelet            Container image "quay.io/redhattraining/hello-world-nginx@sha256:7f99ece5f39bf8d5d76a43cd9104a8d0a39f7135821b94bc1ebdc39cdc6dd63b" already present on machine
+  Normal  Created         2m9s   kubelet            Created container qed
+  Normal  Started         2m9s   kubelet            Started container qed
+
