@@ -1,0 +1,197 @@
+[student@workstation ~]$ oc whoami
+admin
+[student@workstation ~]$ vi .vimrc
+[student@workstation ~]$ sudo dnf install httpd-tools
+Last metadata expiration check: 0:54:17 ago on Fri Sep  5 00:03:20 2025.
+Package httpd-tools-2.4.53-11.el9_2.5.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+[student@workstation ~]$ htpasswd -c -B -b htpasswd jobs redhat
+Adding password for user jobs
+[student@workstation ~]$ htpasswd -b htpasswd woznaik redhat
+Adding password for user woznaik
+[student@workstation ~]$ cat htpasswd
+jobs:$2y$05$DqRZmABLU3dbSWtqpigi/.ol2zESV6xA5LnF0MMG2/1EbSTVp1cVu
+woznaik:$apr1$sSU3Gzvl$dbw7s1vxGIXSZ5PU.sCIw1
+[student@workstation ~]$ htpasswd -D htpasswd woznaik
+Deleting password for user woznaik
+[student@workstation ~]$ htpasswd -B -b htpasswd woznaik
+Usage:
+	htpasswd [-cimBdpsDv] [-C cost] passwordfile username
+	htpasswd -b[cmBdpsDv] [-C cost] passwordfile username password
+
+	htpasswd -n[imBdps] [-C cost] username
+	htpasswd -nb[mBdps] [-C cost] username password
+ -c  Create a new file.
+ -n  Don't update file; display results on stdout.
+ -b  Use the password from the command line rather than prompting for it.
+ -i  Read password from stdin without verification (for script usage).
+ -m  Force MD5 encryption of the password (default).
+ -2  Force SHA-256 crypt() hash of the password (very secure).
+ -5  Force SHA-512 crypt() hash of the password (very secure).
+ -B  Force bcrypt encryption of the password (very secure).
+ -C  Set the computing time used for the bcrypt algorithm
+     (higher is more secure but slower, default: 5, valid: 4 to 17).
+ -r  Set the number of rounds used for the SHA-256, SHA-512 algorithms
+     (higher is more secure but slower, default: 5000).
+ -d  Force CRYPT encryption of the password (8 chars max, insecure).
+ -s  Force SHA-1 encryption of the password (insecure).
+ -p  Do not encrypt the password (plaintext, insecure).
+ -D  Delete the specified user.
+ -v  Verify password for the specified user.
+On other systems than Windows and NetWare the '-p' flag will probably not work.
+The SHA-1 algorithm does not use a salt and is less secure than the MD5 algorithm.
+[student@workstation ~]$ htpasswd -B -b htpasswd woznaik redhat
+Adding password for user woznaik
+[student@workstation ~]$ cat htpasswd 
+jobs:$2y$05$DqRZmABLU3dbSWtqpigi/.ol2zESV6xA5LnF0MMG2/1EbSTVp1cVu
+woznaik:$2y$05$VlvgUhCmw5EvdcMKb4cH8.bcWi8rZL.dgR2CEd2nJChXm44pONqCW
+[student@workstation ~]$ htpasswd -B -b htpasswd collins redhat
+Adding password for user collins
+[student@workstation ~]$ htpasswd -B -b htpasswd adlerin redhat
+Adding password for user adlerin
+[student@workstation ~]$ htpasswd -B -b htpasswd armstrong redhat
+Adding password for user armstrong
+[student@workstation ~]$ oc create secret generic htpass-idp-ex280 \
+> --from-file htpasswd=htpasswd -n openshift-config
+secret/htpass-idp-ex280 created
+[student@workstation ~]$ oc get secrets -n openshift
+NAME                       TYPE                                  DATA   AGE
+builder-dockercfg-9nspv    kubernetes.io/dockercfg               1      590d
+builder-token-xjlcf        kubernetes.io/service-account-token   4      590d
+default-dockercfg-lknz4    kubernetes.io/dockercfg               1      590d
+default-token-g92cd        kubernetes.io/service-account-token   4      590d
+deployer-dockercfg-2t6v9   kubernetes.io/dockercfg               1      590d
+deployer-token-kzglh       kubernetes.io/service-account-token   4      590d
+[student@workstation ~]$ oc get secrets -n openshift-config
+NAME                                      TYPE                                  DATA   AGE
+builder-dockercfg-jxq7c                   kubernetes.io/dockercfg               1      590d
+builder-token-58gfm                       kubernetes.io/service-account-token   4      590d
+classroom-tls                             kubernetes.io/tls                     2      590d
+default-dockercfg-4dz88                   kubernetes.io/dockercfg               1      590d
+default-token-xgbf2                       kubernetes.io/service-account-token   4      590d
+deployer-dockercfg-p79r7                  kubernetes.io/dockercfg               1      590d
+deployer-token-kkcdd                      kubernetes.io/service-account-token   4      590d
+etcd-client                               kubernetes.io/tls                     2      590d
+etcd-metric-client                        kubernetes.io/tls                     2      590d
+etcd-metric-signer                        kubernetes.io/tls                     2      590d
+etcd-signer                               kubernetes.io/tls                     2      590d
+htpass-idp-ex280                          Opaque                                1      16s
+htpasswd-secret                           Opaque                                1      590d
+initial-service-account-private-key       Opaque                                1      590d
+ldap-secret                               Opaque                                1      568d
+pull-secret                               kubernetes.io/dockerconfigjson        1      590d
+webhook-authentication-integrated-oauth   Opaque                                1      590d
+[student@workstation ~]$ oc get oauth cluster -o yaml > oauth.yaml
+[student@workstation ~]$ vim oauth.yaml 
+[student@workstation ~]$ oc replace -f oauth.yaml 
+.ansible/               .rht-labs-dle.log       Templates/
+.auth/                  .ssh/                   Videos/
+.bash_history           .venv/                  deployment.yaml
+.bash_logout            .viminfo                deployment2.yml
+.bash_profile           .vimrc                  htpasswd
+.bashrc                 DO280/                  in_auth.yaml
+.cache/                 Desktop/                info
+.config/                Documents/              ingress.yaml
+.grading/               Downloads/              newcert
+.ipython/               Music/                  oauth.yaml
+.jupyter/               Pictures/               project.sh
+.kube/                  Public/                 service.yaml
+.local/                 README.txt              startSCENARIO.sh
+.mozilla/               Scenario_v4.12_1.0/     
+.npm/                   Scenario_v4.12_1.0.zip  
+[student@workstation ~]$ oc replace -f oauth.yaml
+oauth.config.openshift.io/cluster replaced
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-767c967767-pf4hv   1/1     Running   0          56m
+[student@workstation ~]$ oc get pods -n openshift-authentication -w
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-767c967767-pf4hv   1/1     Running   0          56m
+oauth-openshift-767c967767-pf4hv   1/1     Terminating   0          57m
+oauth-openshift-f8b6ccfb4-6gfrn    0/1     Pending       0          1s
+oauth-openshift-f8b6ccfb4-6gfrn    0/1     Pending       0          1s
+oauth-openshift-767c967767-pf4hv   0/1     Terminating   0          57m
+oauth-openshift-f8b6ccfb4-6gfrn    0/1     Pending       0          26s
+oauth-openshift-f8b6ccfb4-6gfrn    0/1     Pending       0          26s
+oauth-openshift-f8b6ccfb4-6gfrn    0/1     ContainerCreating   0          26s
+oauth-openshift-767c967767-pf4hv   0/1     Terminating         0          57m
+oauth-openshift-767c967767-pf4hv   0/1     Terminating         0          57m
+oauth-openshift-767c967767-pf4hv   0/1     Terminating         0          57m
+oauth-openshift-f8b6ccfb4-6gfrn    0/1     ContainerCreating   0          27s
+oauth-openshift-f8b6ccfb4-6gfrn    0/1     Running             0          27s
+oauth-openshift-f8b6ccfb4-6gfrn    1/1     Running             0          28s
+^C[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                              READY   STATUS    RESTARTS   AGE
+oauth-openshift-f8b6ccfb4-6gfrn   1/1     Running   0          45s
+[student@workstation ~]$ oc login -ujobs -predhat
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc login -uwoznaik -predhat
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc login -ucollins -predhat
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc login -uadlerin -predhat
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc login -uarmstrong -predhat
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc login -uadmin -predhatocp
+Login successful.
+
+You have access to 79 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ ssh lab@utility
+Warning: Permanently added 'utility' (ED25519) to the list of known hosts.
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Tue Jan 23 07:08:41 2024 from 172.25.250.254
+[lab@utility ~]$ cat ocp4/auth/kube
+kubeadmin-password  kubeconfig          kubeconfig-orig     
+[lab@utility ~]$ cat ocp4/auth/kube
+kubeadmin-password  kubeconfig          kubeconfig-orig     
+[lab@utility ~]$ cat ocp4/auth/kube
+kubeadmin-password  kubeconfig          kubeconfig-orig     
+[lab@utility ~]$ cat ocp4/auth/kubeadmin-password 
+GkLhW-tYZIb-GsgvP-oDQVd[lab@utility ~]$ scp ocp4/auth/kubeadmin-password student@workstation /home/student
+cp: cannot stat '/home/student/kubeadmin-password': Permission denied
+cp: cannot stat 'student@workstation': No such file or directory
+[lab@utility ~]$ exit
+logout
+Connection to utility closed.
+[student@workstation ~]$ scp lab@utility:/home/lab/ocp4/auth/kubeadmin-password .
+kubeadmin-password                                         100%   23    18.8KB/s   00:00    
+[student@workstation ~]$ cat kubeadmin-password 
+GkLhW-tYZIb-GsgvP-oDQVd[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u kubeadmin -p GkLhW-tYZIb-GsgvP-oDQVd
+Login successful.
+
+You have access to 79 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
