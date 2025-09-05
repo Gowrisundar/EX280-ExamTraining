@@ -1419,6 +1419,63 @@ NAME                       READY   STATUS    RESTARTS   AGE
 mercury-6fc977f8f7-467kx   1/1     Running   0          48s
 [student@workstation ~]$ 
 
+student@workstation ~]$ oc project blue
+bluebook   bluewills  
+[student@workstation ~]$ oc project bluewills 
+Now using project "bluewills" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get pods
+No resources found in bluewills namespace.
+[student@workstation ~]$ oc new-app --name=rocky --image=quay.io/redhattraining/hellow-world-nginx
+error: unable to locate any local docker images with name "quay.io/redhattraining/hellow-world-nginx"
+
+The 'oc new-app' command will match arguments to the following types:
+
+  1. Images tagged into image streams in the current project or the 'openshift' project
+     - if you don't specify a tag, we'll add ':latest'
+  2. Images in the container storage, on remote registries, or on the local container engine
+  3. Templates in the current project or the 'openshift' project
+  4. Git repository URLs or local paths that point to Git repositories
+
+--allow-missing-images can be used to point to an image that does not exist yet.
+
+See 'oc new-app -h' for examples.
+[student@workstation ~]$ oc new-app --name=rocky --image=quay.io/redhattraining/hello-world-nginx
+--> Found container image 44eaa13 (6 years old) from quay.io for "quay.io/redhattraining/hello-world-nginx"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "rocky:latest" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "rocky" created
+    deployment.apps "rocky" created
+    service "rocky" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/rocky' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+rocky-d8774f8cd-q776t   1/1     Running   0          3s
+[student@workstation ~]$ oc whoami --show-console
+https://console-openshift-console.apps.ocp4.example.com
+[student@workstation ~]$ oc project
+Using project "bluewills" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+rocky-d8774f8cd-q776t   1/1     Running   0          6m15s
+[student@workstation ~]$ oc get pods -o wide -n atlas
+NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+mercury-6fc977f8f7-467kx   1/1     Running   0          53m   10.8.0.150   master01   <none>           <none>
+[student@workstation ~]$ oc rsh rocky-d8774f8cd-q776t
+sh-4.4$ curl 10.8.0.150:8080
+Hello OpenShift!
+sh-4.4$ 
+
 
 
 
