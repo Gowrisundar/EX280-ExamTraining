@@ -1607,6 +1607,180 @@ sh-4.4$
 NAME                                       READY   STATUS    RESTARTS       AGE
 file-integrity-operator-8699895f77-mhhxz   1/1     Running   1 (3m5s ago)   3m14s
 [student@workstation ~]$ 
+[student@workstation ~]$ oc new-project charts-development
+Now using project "charts-development" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ helm re
+registry  (login to or logout from a registry)
+repo      (add, list, remove, update, and index chart repositories)
+[student@workstation ~]$ helm re
+registry  (login to or logout from a registry)
+repo      (add, list, remove, update, and index chart repositories)
+[student@workstation ~]$ helm repo add http://helm.ocp4.example.com/charts
+Error: "helm repo add" requires 2 arguments
+
+Usage:  helm repo add [NAME] [URL] [flags]
+[student@workstation ~]$ helm repo add myrepo http://helm.ocp4.example.com/charts 
+"myrepo" has been added to your repositories
+[student@workstation ~]$ helm repo list
+NAME  	URL                                
+myrepo	http://helm.ocp4.example.com/charts
+[student@workstation ~]$ helm search repo --versions 
+NAME                   	CHART VERSION	APP VERSION	DESCRIPTION                                       
+myrepo/etherpad        	0.0.7        	latest     	A Helm chart for etherpad lite                    
+myrepo/etherpad        	0.0.6        	latest     	A Helm chart for etherpad lite                    
+myrepo/examplechart    	0.1.0        	           	A Helm chart for Kubernetes                       
+myrepo/influxdb        	4.12.1       	1.8.10     	Scalable datastore for metrics, events, and rea...
+myrepo/mysql-persistent	0.0.2        	0.0.2      	This content is expermental, do not use it in p...
+[student@workstation ~]$ tree
+.
+├── DO280
+│   ├── labs
+│   │   └── auth-providers
+│   │       └── oauth.yaml
+│   └── solutions
+│       └── auth-providers
+│           └── oauth.yaml
+├── Desktop
+├── Documents
+├── Downloads
+│   └── Scenario_v4.12_1.0.zip
+├── Music
+├── Pictures
+├── Public
+├── README.txt
+├── Scenario_v4.12_1.0
+│   ├── README.txt
+│   ├── deployment.yaml
+│   ├── deployment2.yml
+│   ├── in_auth.yaml
+│   ├── info
+│   ├── ingress.yaml
+│   ├── newcert
+│   ├── oauth.yaml
+│   ├── project.sh
+│   ├── service.yaml
+│   └── startSCENARIO.sh
+├── Scenario_v4.12_1.0.zip
+├── Templates
+├── Videos
+├── apps-crc.testing.crt
+├── apps-crc.testing.csr
+├── apps-crc.testing.key
+├── deployment.yaml
+├── deployment2.yml
+├── htpasswd
+├── in_auth.yaml
+├── info
+├── ingress.yaml
+├── kubeadmin-password
+├── limits.yaml
+├── newcert
+├── oauth.yaml
+├── project.sh
+├── service.yaml
+└── startSCENARIO.sh
+
+14 directories, 32 files
+[student@workstation ~]$ helm tree
+Error: unknown command "tree" for "helm"
+Run 'helm --help' for usage.
+[student@workstation ~]$ helm show values myrepo/values.yaml
+Error: chart "values.yaml" matching  not found in myrepo index. (try 'helm repo update'): no chart name found
+[student@workstation ~]$ helm show values myrepo/etherpad 
+# Default values for etherpad.
+replicaCount: 1
+
+defaultTitle: "Labs Etherpad"
+defaultText: "✍️ Assign yourself a user and share your ideas! ✍️"
+
+image:
+  repository: etherpad
+  name:
+  tag:
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 9001
+
+ingress:
+  enabled: false
+  hosts:
+    - name: etherpad.organization.com
+  annotations: {}
+
+route:
+  enabled: true
+  host: null
+  targetPort: http
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+persistence:
+  enabled: true
+  annotations: {}
+  storageClass:
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  mountPath: /opt/etherpad-lite/var
+
+[student@workstation ~]$ vim values.yaml
+[student@workstation ~]$ helm install etherpad myrepo/etherpad -f values.yaml 
+NAME: etherpad
+LAST DEPLOYED: Fri Sep  5 05:26:37 2025
+NAMESPACE: charts-development
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods
+NAME                       READY   STATUS              RESTARTS   AGE
+etherpad-8bd65d879-n94jt   0/1     ContainerCreating   0          5s
+[student@workstation ~]$ oc get routes
+NAME       HOST/PORT                                           PATH   SERVICES   PORT   TERMINATION     WILDCARD
+etherpad   etherpad-charts-development.apps.ocp4.example.com          etherpad   http   edge/Redirect   None
+[student@workstation ~]$ oc get pods
+NAME                       READY   STATUS              RESTARTS   AGE
+etherpad-8bd65d879-n94jt   0/1     ContainerCreating   0          14s
+[student@workstation ~]$ oc get pods -w
+NAME                       READY   STATUS              RESTARTS   AGE
+etherpad-8bd65d879-n94jt   0/1     ContainerCreating   0          18s
+etherpad-8bd65d879-n94jt   0/1     Running             0          24s
+^C[student@workstation ~]$ 
+
+
 
 
 
