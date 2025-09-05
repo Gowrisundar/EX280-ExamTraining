@@ -362,4 +362,119 @@ edit                    ClusterRole/edit                   79s                 c
 system:deployers        ClusterRole/system:deployer        6m59s                                              titan/deployer
 system:image-builders   ClusterRole/system:image-builder   6m59s                                              titan/builder
 system:image-pullers    ClusterRole/system:image-puller    7m                  system:serviceaccounts:titan   
+[student@workstation ~]$ oc project manhattan
+error: A project named "manhattan" does not exist on "https://api.ocp4.example.com:6443".
+Your projects are:
+* apache
+* apollo
+* apples
+* area51
+* atlas
+* bluebook
+* bluewills
+* default
+* gemini
+* gru
+* kube-node-lease
+* kube-public
+* kube-system
+* lerna
+* math
+* metallb-system
+* NFS Provisioner (nfs-client-provisioner)
+* openshift
+* openshift-apiserver
+* openshift-apiserver-operator
+* openshift-authentication
+* openshift-authentication-operator
+* openshift-cloud-controller-manager
+* openshift-cloud-controller-manager-operator
+* openshift-cloud-credential-operator
+* openshift-cloud-network-config-controller
+* openshift-cluster-csi-drivers
+* openshift-cluster-machine-approver
+* openshift-cluster-node-tuning-operator
+* openshift-cluster-samples-operator
+* openshift-cluster-storage-operator
+* openshift-cluster-version
+* openshift-config
+* openshift-config-managed
+* openshift-config-operator
+* openshift-console
+* openshift-console-operator
+* openshift-console-user-settings
+* openshift-controller-manager
+* openshift-controller-manager-operator
+* openshift-dns
+* openshift-dns-operator
+* openshift-etcd
+* openshift-etcd-operator
+* openshift-host-network
+* openshift-image-registry
+* openshift-infra
+* openshift-ingress
+* openshift-ingress-canary
+* openshift-ingress-operator
+* openshift-insights
+* openshift-kni-infra
+* openshift-kube-apiserver
+* openshift-kube-apiserver-operator
+* openshift-kube-controller-manager
+* openshift-kube-controller-manager-operator
+* openshift-kube-scheduler
+* openshift-kube-scheduler-operator
+* openshift-kube-storage-version-migrator
+* openshift-kube-storage-version-migrator-operator
+* openshift-machine-api
+* openshift-machine-config-operator
+* openshift-marketplace
+* openshift-monitoring
+* openshift-multus
+* openshift-network-diagnostics
+* openshift-network-node-identity
+* openshift-network-operator
+* openshift-node
+* openshift-nutanix-infra
+* openshift-oauth-apiserver
+* openshift-openstack-infra
+* openshift-operator-lifecycle-manager
+* openshift-operators
+* openshift-ovirt-infra
+* openshift-ovn-kubernetes
+* openshift-route-controller-manager
+* openshift-service-ca
+* openshift-service-ca-operator
+* openshift-storage
+* openshift-user-workload-monitoring
+* openshift-vsphere-infra
+* path-finder
+* titan
+[student@workstation ~]$ oc new-project manhattan
+Now using project "manhattan" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc create quota ex280-quota --hard limits.memory=1Gi,limits.cpu=2,replicationcontrollers=3,pods=3,service=6
+error: failed to create quota: ResourceQuota "ex280-quota" is invalid: [spec.hard[service]: Invalid value: "service": must be a standard resource type or fully qualified, spec.hard[service]: Invalid value: "service": must be a standard resource for quota]
+[student@workstation ~]$ oc create quota ex280-quota --hard limits.memory=1Gi,limits.cpu=2,replicationcontrollers=3,pods=3,services=6
+resourcequota/ex280-quota created
+[student@workstation ~]$ oc get quota ex280-quota 
+NAME          AGE   REQUEST                                                 LIMIT
+ex280-quota   18s   pods: 0/3, replicationcontrollers: 0/3, services: 0/6   limits.cpu: 0/2, limits.memory: 0/1Gi
+[student@workstation ~]$ oc describe resourcequotas ex280-quota 
+Name:                   ex280-quota
+Namespace:              manhattan
+Resource                Used  Hard
+--------                ----  ----
+limits.cpu              0     2
+limits.memory           0     1Gi
+pods                    0     3
+replicationcontrollers  0     3
+services                0     6
 [student@workstation ~]$ 
