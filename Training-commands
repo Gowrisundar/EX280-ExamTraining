@@ -1603,7 +1603,10 @@ tmpfs                         7.9G     0  7.9G   0% /proc/scsi
 tmpfs                         7.9G     0  7.9G   0% /sys/firmware
 sh-4.4$ 
 
-
+[student@workstation ~]$ oc get pods -n openshift-file-integrity file-integrity-operator-8699895f77-mhhxz 
+NAME                                       READY   STATUS    RESTARTS       AGE
+file-integrity-operator-8699895f77-mhhxz   1/1     Running   1 (3m5s ago)   3m14s
+[student@workstation ~]$ 
 
 
 
