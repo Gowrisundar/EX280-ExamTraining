@@ -1,0 +1,13 @@
+[student@workstation ~]$ cat newcert
+#!/bin/bash
+if [ -z "$1" ]
+  then
+    echo "No argument supplied"
+  else
+    echo "Creating TLS key-pair.."
+      openssl genrsa -out apps-crc.testing.key 2048
+    echo "Creating CSR.."
+      openssl req -new -key apps-crc.testing.key -out apps-crc.testing.csr -subj $1
+    echo "Creating TLS Certificate"
+      openssl x509 -req -days 30 -signkey apps-crc.testing.key -in apps-crc.testing.csr -out apps-crc.testing.crt
+fi
