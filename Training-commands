@@ -477,4 +477,85 @@ limits.memory           0     1Gi
 pods                    0     3
 replicationcontrollers  0     3
 services                0     6
+[student@workstation ~]$ oc project blue
+bluebook   bluewills  
+[student@workstation ~]$ oc project blue
+bluebook   bluewills  
+[student@workstation ~]$ oc project bluebook 
+Now using project "bluebook" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ vim limits.yaml
+[student@workstation ~]$ oc create -f limits.yaml 
+limitrange/ex280-limits created
+[student@workstation ~]$ oc get limitranges ex280-limits
+NAME           CREATED AT
+ex280-limits   2025-09-05T06:05:50Z
+[student@workstation ~]$ oc describe limitranges ex280-limits
+Name:       ex280-limits
+Namespace:  bluebook
+Type        Resource  Min    Max    Default Request  Default Limit  Max Limit/Request Ratio
+----        --------  ---    ---    ---------------  -------------  -----------------------
+Pod         cpu       10m    500m   -                -              -
+Pod         memory    100Mi  300Mi  -                -              -
+Container   memory    100Mi  300Mi  100Mi            300Mi          -
+Container   cpu       10m    500m   100m             500m           -
+[student@workstation ~]$ vim limits.yaml 
+[student@workstation ~]$ cat limits.yaml 
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: ex280-limits
+spec:
+  limits:
+    - type: "Pod"
+      max: 
+        cpu: 500m
+        memory: 300Mi
+      min:
+        cpu: 10m
+        memory: 100Mi
+    - type: "Container"
+      max: 
+        cpu: 500m
+        memory: 300Mi
+      min:
+        cpu: 10m
+        memory: 100Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 100Mi
+          
+[student@workstation ~]$ cat oauth.yaml 
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=admin,cn=users,cn=accounts,dc=ocp4,dc=example,dc=com
+      bindPassword:
+        name: ldap-secret
+      ca:
+        name: ca-config-map
+      insecure: false
+      url: ldap://idm.ocp4.example.com/cn=users,cn=accounts,dc=ocp4,dc=example,dc=com?uid
+    mappingMethod: claim
+    name: Red Hat Identity Management
+    type: LDAP
+  - htpasswd:
+      fileData:
+        name: htpass-idp-ex280
+    mappingMethod: claim
+    name: htpass-ex280
+    type: HTPasswd
 [student@workstation ~]$ 
