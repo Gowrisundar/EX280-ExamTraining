@@ -787,4 +787,173 @@ oxcart   oxcart-area51.apps.ocp4.example.com          oxcart     8080-tcp   edge
     <h1>Hello, world from nginx!</h1>
   </body>
 </html>
+[student@workstation ~]$ cat newcert
+#!/bin/bash
+if [ -z "$1" ]
+  then
+    echo "No argument supplied"
+  else
+    echo "Creating TLS key-pair.."
+      openssl genrsa -out apps-crc.testing.key 2048
+    echo "Creating CSR.."
+      openssl req -new -key apps-crc.testing.key -out apps-crc.testing.csr -subj $1
+    echo "Creating TLS Certificate"
+      openssl x509 -req -days 30 -signkey apps-crc.testing.key -in apps-crc.testing.csr -out apps-crc.testing.crt
+fi
+
+[student@workstation ~]$ cat startSCENARIO.sh 
+#! /bin/bash
+#oc login
+#oc adm taint node master01 node=worker:NoSchedule
+#oc adm taint node master02 node=worker:NoSchedule
+#oc adm taint node master03 node=worker:NoSchedule
+oc apply -f oauth.yaml
+oc delete groups --all
+oc label node master01 trek=star --overwrite=true
+echo "-----------------Creating Bluewills Project and Resources------------"
+oc new-project bluewills
+oc new-app --name=rocky demo/openshift-image
+oc expose svc rocky
+sleep 5
+
+
+echo "-----------------Creating Bluewills area51 and Resources------------"
+oc new-project area51
+oc new-app --name=oxcart demo/openshift-image
+oc expose svc oxcart --hostname=oxcart.apps.ocp4.example.com
+sleep 5
+
+echo "-----------------Creating Lerna Project and Resources------------"
+oc new-project lerna
+oc new-app --name=hydra demo/openshift-image
+sleep 5
+
+echo "-----------------Creating Gru Project and Resources------------"
+oc new-project gru
+oc new-app --name=scala demo/openshift-image  
+sleep 5
+
+echo "-----------------Creating math Project and Resources------------"
+oc new-project math
+oc new-app --name=qed demo/openshift-image
+oc expose svc qed --hostname=qed.apps.ocp4.example.com
+sleep 5
+
+echo "-----------------Creating Apples Project and Resources------------"
+oc new-project apples
+oc new-app --name oranges demo/crashimage
+sleep 3
+oc delete svc oranges
+oc create -f service.yaml
+oc expose svc oranges --hostname=oranges.apps.ocp4.example.com
+sleep 5
+
+echo "-----------------Creating path-finder Project and Resources------------"
+oc new-project path-finder
+oc create --save-config -f deployment.yaml
+oc expose deployment voyager --port 8080
+oc create --save-config -f ingress.yaml
+sleep 5
+
+echo "-----------------Creating Atlas Project and Resources------------"
+oc new-project atlas
+oc create -f deployment2.yml
+oc expose deployment mercury --port 8080
+oc expose svc mercury --hostname=mercury.apps.ocp4.example.com
+
+[student@workstation ~]$ oc project lerna 
+Now using project "lerna" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get pods
+No resources found in lerna namespace.
+[student@workstation ~]$ oc new-app --name=hydra --image=quay.io/redhattraining/hello-world-nginx
+--> Found container image 44eaa13 (6 years old) from quay.io for "quay.io/redhattraining/hello-world-nginx"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "hydra:latest" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "hydra" created
+    deployment.apps "hydra" created
+    service "hydra" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/hydra' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+hydra-54487dfc58-cjshd   1/1     Running   0          3s
+[student@workstation ~]$ oc scale --replicas=5 deployment hydra
+deployment.apps/hydra scaled
+[student@workstation ~]$ oc get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+hydra-54487dfc58-8spnj   1/1     Running   0          7s
+hydra-54487dfc58-cjshd   1/1     Running   0          52s
+hydra-54487dfc58-glnfm   1/1     Running   0          7s
+hydra-54487dfc58-qszlf   1/1     Running   0          7s
+hydra-54487dfc58-rfrj8   1/1     Running   0          7s
+[student@workstation ~]$ oc get dc
+Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
+No resources found in lerna namespace.
+[student@workstation ~]$ oc get deployment
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+hydra   5/5     5            5           82s
+[student@workstation ~]$ #some pods created dc and some pods on deployment, please check and then increase the replica
+[student@workstation ~]$ oc pro
+process   (Process a template into list of resources)
+project   (Switch to another project)
+projects  (Display existing projects)
+proxy     (Run a proxy to the Kubernetes API server)
+[student@workstation ~]$ oc project gru
+Now using project "gru" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get pods
+No resources found in gru namespace.
+[student@workstation ~]$ oc new-app --name=scala --image=quay.io/redhattraining/hello-world-nginx
+--> Found container image 44eaa13 (6 years old) from quay.io for "quay.io/redhattraining/hello-world-nginx"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "scala:latest" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "scala" created
+    deployment.apps "scala" created
+    service "scala" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/scala' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+scala-7bd84d6b7d-lnxs7   1/1     Running   0          5s
+[student@workstation ~]$ oc set resources --re
+--recursive        (Process the directory used in -f, --filename recursively. Useful when y…)
+--request-timeout  (The length of time to wait before giving up on a single server request.…)
+--requests         (The resource requirement requests for this container.  For example, 'cp…)
+[student@workstation ~]$ oc set resources --requests cpu=25m --limits cpu=100m deployment scala
+deployment.apps/scala resource requirements updated
+[student@workstation ~]$ oc aut
+auth       (Inspect authorization)
+autoscale  (Autoscale a deployment config, deployment, replica set, stateful set, or replic…)
+[student@workstation ~]$ oc autoscale --min=6 --max=40 --cpu-percent=60 deployment scala
+horizontalpodautoscaler.autoscaling/scala autoscaled
+[student@workstation ~]$ oc get hpa
+NAME    REFERENCE          TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+scala   Deployment/scala   <unknown>/60%   6         40        0          6s
+[student@workstation ~]$ oc get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+scala-9f487c596-828v5   1/1     Running   0          13s
+scala-9f487c596-9xbzp   1/1     Running   0          13s
+scala-9f487c596-dmn9q   1/1     Running   0          13s
+scala-9f487c596-fhttj   1/1     Running   0          13s
+scala-9f487c596-rpw87   1/1     Running   0          13s
+scala-9f487c596-zf5mb   1/1     Running   0          93s
 [student@workstation ~]$ 
