@@ -194,4 +194,50 @@ Login successful.
 You have access to 79 projects, the list has been suppressed. You can list all projects with 'oc projects'
 
 Using project "default".
+[student@workstation ~]$ oc whoami
+kube:admin
+[student@workstation ~]$ oc adm policy add-
+add-cluster-role-to-group  (Add a role to groups for all projects in the cluster)
+add-cluster-role-to-user   (Add a role to users for all projects in the cluster)
+add-role-to-group          (Add a role to groups for the project)
+add-role-to-user           (Add a role to users or service accounts for the current project)
+add-scc-to-group           (Add a security context constraint to groups)
+add-scc-to-user            (Add a security context constraint to users or a service account)
+[student@workstation ~]$ oc adm policy add-cluster-role-to-user cluster-admin jobs
+clusterrole.rbac.authorization.k8s.io/cluster-admin added: "jobs"
+[student@workstation ~]$ oc adm policy add-cluster-role-to-user self-provisioner wozniak
+Warning: User 'wozniak' not found
+clusterrole.rbac.authorization.k8s.io/self-provisioner added: "wozniak"
+[student@workstation ~]$ oc adm policy add-cluster-role-to-user self-provisioner woznaik
+clusterrole.rbac.authorization.k8s.io/self-provisioner added: "woznaik"
+[student@workstation ~]$ oc adm policy remove-cluster-role-from-
+remove-cluster-role-from-group  (Remove a role from groups for all projects in the cluster)
+remove-cluster-role-from-user   (Remove a role from users for all projects in the cluster)
+[student@workstation ~]$ oc adm policy remove-cluster-role-from-
+remove-cluster-role-from-group  (Remove a role from groups for all projects in the cluster)
+remove-cluster-role-from-user   (Remove a role from users for all projects in the cluster)
+[student@workstation ~]$ oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+Warning: Your changes may get lost whenever a master is restarted, unless you prevent reconciliation of this rolebinding using the following command: oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false' --overwrite
+clusterrole.rbac.authorization.k8s.io/self-provisioner removed: "system:authenticated:oauth"
+[student@workstation ~]$ oc get clusterrolebindings -o wide | grep woznaik
+self-provisioner-0                                                          ClusterRole/self-provisioner                                                            9m51s   woznaik                                                                                                         
+[student@workstation ~]$ oc get clusterrolebindings -o wide | grep armstrong
+[student@workstation ~]$ oc adm policy add-cluster-role-to-user cluster-reader woznaik
+clusterrole.rbac.authorization.k8s.io/cluster-reader added: "woznaik"
+[student@workstation ~]$ oc get clusterrolebindings -o wide | grep woznaik
+cluster-reader                                                              ClusterRole/cluster-reader                                                              9s     woznaik                                                                                                         
+self-provisioner-0                                                          ClusterRole/self-provisioner                                                            13m    woznaik                                                                                                         
+[student@workstation ~]$ oc login -u jobs -p redhat
+Login successful.
+
+You have access to 79 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc delete kubeadmin -n kube-system 
+error: the server doesn't have a resource type "kubeadmin"
+[student@workstation ~]$ oc delete user kubeadmin -n kube-system 
+Warning: deleting cluster-scoped resources, not scoped to the provided namespace
+Error from server (NotFound): users.user.openshift.io "kubeadmin" not found
+[student@workstation ~]$ oc delete secret kubeadmin -n kube-system 
+secret "kubeadmin" deleted
 [student@workstation ~]$ 
