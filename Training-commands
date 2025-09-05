@@ -1779,8 +1779,702 @@ NAME                       READY   STATUS              RESTARTS   AGE
 etherpad-8bd65d879-n94jt   0/1     ContainerCreating   0          18s
 etherpad-8bd65d879-n94jt   0/1     Running             0          24s
 ^C[student@workstation ~]$ 
+^C[student@workstation ~]$ cp limits.yaml limit_range.yaml
+[student@workstation ~]$ vim limit_range.yaml 
+[student@workstation ~]$ oc adm create-bootstrap-project-template -o yaml > proj-temp.yaml
+[student@workstation ~]$ cat limit_range.yaml >> proj-temp.yaml 
+[student@workstation ~]$ vim proj
+proj-temp.yaml  project.sh      
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc create -f proj-temp.yaml -n openshift-config
+The LimitRange "${PROJECT_NAME}-limitrange" is invalid: metadata.name: Invalid value: "${PROJECT_NAME}-limitrange": a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc create -f proj-temp.yaml -n openshift-config
+The LimitRange "${PROJECT_NAME}-limitrange" is invalid: metadata.name: Invalid value: "${PROJECT_NAME}-limitrange": a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc create -f proj-temp.yaml --dry-run=client -o yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: ${PROJECT_NAME}-limitrange
+  namespace: charts-development
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+spec:
+  limits:
+  - default:
+      memory: 100Mi
+    defaultRequest:
+      memory: 30Mi
+    max:
+      memory: 102Mi
+    min:
+      memory: 28Mi
+    type: Container
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc create -f proj-temp.yaml --dry-run=client -o yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: ${PROJECT_NAME}-limitrange
+  namespace: charts-development
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+spec:
+  limits:
+  - default:
+      memory: 100Mi
+    defaultRequest:
+      memory: 30Mi
+    max:
+      memory: 102Mi
+    min:
+      memory: 28Mi
+    type: Container
+[student@workstation ~]$ oc create -f proj-temp.yaml -n openshift-config
+The LimitRange "${PROJECT_NAME}-limitrange" is invalid: metadata.name: Invalid value: "${PROJECT_NAME}-limitrange": a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc create -f proj-temp.yaml --dry-run=client -o yaml
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+  namespace: charts-development
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: ${PROJECT_NAME}-limitrange
+  spec:
+    limits:
+    - default:
+        memory: 100Mi
+      defaultRequest:
+        memory: 30Mi
+      max:
+        memory: 102Mi
+      min:
+        memory: 28Mi
+      type: Container
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc create -f proj-temp.yaml -n openshift-config
+template.template.openshift.io/project-request created
+[student@workstation ~]$ oc edit projects.config.openshift.io cluster 
+project.config.openshift.io/cluster edited
+[student@workstation ~]$ oc get pods -n openshift-apiserver
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          5h49m
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          5h50m
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          5h51m
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          5h52m
+^C[student@workstation ~]$ oc new-project testproject
+Now using project "testproject" on server "https://api.ocp4.example.com:6443".
 
+You can add applications to this project with the 'new-app' command. For example, try:
 
+    oc new-app rails-postgresql-example
 
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc get l
+l2advertisements.metallb.io                lvmclusters.lvm.topolvm.io
+leases.coordination.k8s.io                 lvmvolumegroupnodestatuses.lvm.topolvm.io
+limitranges                                lvmvolumegroups.lvm.topolvm.io
+logicalvolumes.topolvm.io                  
+[student@workstation ~]$ oc get limitranges 
+No resources found in testproject namespace.
+[student@workstation ~]$ oc whoami
+jobs
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc a
+adm            (Tools for managing a cluster)
+annotate       (Update the annotations on a resource)
+api-resources  (Print the supported API resources on the server)
+api-versions   (Print the supported API versions on the server, in the form of "group/versi…)
+apply          (Apply a configuration to a resource by file name or stdin)
+attach         (Attach to a running container)
+auth           (Inspect authorization)
+autoscale      (Autoscale a deployment config, deployment, replica set, stateful set, or re…)
+[student@workstation ~]$ oc ap
+api-resources  (Print the supported API resources on the server)
+api-versions   (Print the supported API versions on the server, in the form of "group/versi…)
+apply          (Apply a configuration to a resource by file name or stdin)
+[student@workstation ~]$ oc apply -f proj-temp.yaml -n openshift
+openshift
+openshift-apiserver
+openshift-apiserver-operator
+openshift-authentication
+openshift-authentication-operator
+openshift-cloud-controller-manager
+openshift-cloud-controller-manager-operator
+openshift-cloud-credential-operator
+openshift-cloud-network-config-controller
+openshift-cluster-csi-drivers
+openshift-cluster-machine-approver
+openshift-cluster-node-tuning-operator
+openshift-cluster-samples-operator
+openshift-cluster-storage-operator
+openshift-cluster-version
+openshift-config
+openshift-config-managed
+openshift-config-operator
+openshift-console
+openshift-console-operator
+openshift-console-user-settings
+openshift-controller-manager
+openshift-controller-manager-operator
+openshift-dns
+openshift-dns-operator
+openshift-etcd
+openshift-etcd-operator
+[student@workstation ~]$ oc apply -f proj-temp.yaml -n openshift-c
+openshift-cloud-controller-manager           openshift-cluster-version
+openshift-cloud-controller-manager-operator  openshift-config
+openshift-cloud-credential-operator          openshift-config-managed
+openshift-cloud-network-config-controller    openshift-config-operator
+openshift-cluster-csi-drivers                openshift-console
+openshift-cluster-machine-approver           openshift-console-operator
+openshift-cluster-node-tuning-operator       openshift-console-user-settings
+openshift-cluster-samples-operator           openshift-controller-manager
+openshift-cluster-storage-operator           openshift-controller-manager-operator
+[student@workstation ~]$ oc apply -f proj-temp.yaml -n openshift-c
+openshift-cloud-controller-manager           openshift-cluster-version
+openshift-cloud-controller-manager-operator  openshift-config
+openshift-cloud-credential-operator          openshift-config-managed
+openshift-cloud-network-config-controller    openshift-config-operator
+openshift-cluster-csi-drivers                openshift-console
+openshift-cluster-machine-approver           openshift-console-operator
+openshift-cluster-node-tuning-operator       openshift-console-user-settings
+openshift-cluster-samples-operator           openshift-controller-manager
+openshift-cluster-storage-operator           openshift-controller-manager-operator
+[student@workstation ~]$ oc apply -f proj-temp.yaml -n openshift-config
+Warning: resource templates/project-request is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
+template.template.openshift.io/project-request configured
+[student@workstation ~]$ oc get pods -n openshift-apiserver
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          5h55m
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          5h55m
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc apply -f proj-temp.yaml -n openshift-config
+template.template.openshift.io/project-request configured
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          5h58m
+^C[student@workstation ~]$ oc delete template -n openshift
+openshift
+openshift-apiserver
+openshift-apiserver-operator
+openshift-authentication
+openshift-authentication-operator
+openshift-cloud-controller-manager
+openshift-cloud-controller-manager-operator
+openshift-cloud-credential-operator
+openshift-cloud-network-config-controller
+openshift-cluster-csi-drivers
+openshift-cluster-machine-approver
+openshift-cluster-node-tuning-operator
+openshift-cluster-samples-operator
+openshift-cluster-storage-operator
+openshift-cluster-version
+openshift-config
+openshift-config-managed
+openshift-config-operator
+openshift-console
+openshift-console-operator
+openshift-console-user-settings
+[student@workstation ~]$ oc get template -n openshift-config
+NAME              DESCRIPTION   PARAMETERS    OBJECTS
+project-request                 5 (5 blank)   3
+[student@workstation ~]$ ll
+total 92
+drwxr-xr-x. 4 student student   35 Sep  5 00:12 DO280
+drwxr-xr-x. 2 student student    6 Jan 23  2024 Desktop
+drwxr-xr-x. 2 student student    6 Jan 23  2024 Documents
+drwxr-xr-x. 2 student student   36 Sep  5 00:36 Downloads
+drwxr-xr-x. 2 student student    6 Jan 23  2024 Music
+drwxr-xr-x. 2 student student    6 Jan 23  2024 Pictures
+drwxr-xr-x. 2 student student    6 Jan 23  2024 Public
+-rw-r--r--. 1 student student  746 Sep  5 00:40 README.txt
+drwxr-xr-x. 2 student student 4096 Oct 15  2023 Scenario_v4.12_1.0
+-rw-r--r--. 1 student student 5019 Sep  5 00:38 Scenario_v4.12_1.0.zip
+drwxr-xr-x. 2 student student    6 Jan 23  2024 Templates
+drwxr-xr-x. 2 student student    6 Jan 23  2024 Videos
+-rw-r--r--. 1 student student 1245 Sep  5 02:20 apps-crc.testing.crt
+-rw-r--r--. 1 student student 1017 Sep  5 02:20 apps-crc.testing.csr
+-rw-------. 1 student student 1704 Sep  5 02:20 apps-crc.testing.key
+-rw-r--r--. 1 student student  978 Sep  5 00:40 deployment.yaml
+-rw-r--r--. 1 student student 1659 Sep  5 00:40 deployment2.yml
+-rw-r--r--. 1 student student  344 Sep  5 01:01 htpasswd
+-rw-r--r--. 1 student student   82 Sep  5 00:40 in_auth.yaml
+-rw-r--r--. 1 student student   78 Sep  5 00:40 info
+-rw-r--r--. 1 student student  335 Sep  5 00:40 ingress.yaml
+-rw-r-----. 1 student student   23 Sep  5 01:15 kubeadmin-password
+-rw-r--r--. 1 student student  278 Sep  5 05:41 limit_range.yaml
+-rw-r--r--. 1 student student  402 Sep  5 02:06 limits.yaml
+-rwxr-xr-x. 1 student student  424 Sep  5 00:40 newcert
+-rw-r--r--. 1 student student  724 Sep  5 01:08 oauth.yaml
+-rw-r--r--. 1 student student 1230 Sep  5 06:05 proj-temp.yaml
+-rw-r--r--. 1 student student  218 Sep  5 00:40 project.sh
+-rw-r--r--. 1 student student  278 Sep  5 00:40 service.yaml
+-rwxr--r--. 1 student student 1889 Sep  5 00:40 startSCENARIO.sh
+-rw-r--r--. 1 student student   92 Sep  5 05:25 values.yaml
+[student@workstation ~]$ cat proj-temp.yaml 
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: ${PROJECT_NAME}-limitrange
+  spec:
+    limits:
+      - type: "Container"
+        memory: 
+          max: 102Mi
+        memory:
+          min: 28Mi
+        defaultRequest:
+          memory: 30Mi
+        default:
+          memory: 100Mi
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER 
+[student@workstation ~]$ oc get template -n openshift-config
+openshift-config           openshift-config-managed   openshift-config-operator
+[student@workstation ~]$ oc get template -n openshift-config project-request -o yaml
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"template.openshift.io/v1","kind":"Template","metadata":{"annotations":{},"creationTimestamp":null,"name":"project-request","namespace":"openshift-config"},"objects":[{"apiVersion":"project.openshift.io/v1","kind":"Project","metadata":{"annotations":{"openshift.io/description":"${PROJECT_DESCRIPTION}","openshift.io/display-name":"${PROJECT_DISPLAYNAME}","openshift.io/requester":"${PROJECT_REQUESTING_USER}"},"creationTimestamp":null,"name":"${PROJECT_NAME}"},"spec":{},"status":{}},{"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"creationTimestamp":null,"name":"admin","namespace":"${PROJECT_NAME}"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"ClusterRole","name":"admin"},"subjects":[{"apiGroup":"rbac.authorization.k8s.io","kind":"User","name":"${PROJECT_ADMIN_USER}"}]},{"apiVersion":"v1","kind":"LimitRange","metadata":{"name":"${PROJECT_NAME}-limitrange"},"spec":{"limits":[{"default":{"memory":"100Mi"},"defaultRequest":{"memory":"30Mi"},"memory":{"min":"28Mi"},"type":"Container"}]}}],"parameters":[{"name":"PROJECT_NAME"},{"name":"PROJECT_DISPLAYNAME"},{"name":"PROJECT_DESCRIPTION"},{"name":"PROJECT_ADMIN_USER"},{"name":"PROJECT_REQUESTING_USER"}]}
+  creationTimestamp: "2025-09-05T09:55:26Z"
+  name: project-request
+  namespace: openshift-config
+  resourceVersion: "204870"
+  uid: 5b925e55-84ac-4846-862f-0c53ef34d977
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: ${PROJECT_NAME}-limitrange
+  spec:
+    limits:
+    - default:
+        memory: 100Mi
+      defaultRequest:
+        memory: 30Mi
+      memory:
+        min: 28Mi
+      type: Container
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+[student@workstation ~]$ oc delete template -n openshift-config project-request 
+template.template.openshift.io "project-request" deleted
+[student@workstation ~]$ oc get template -n openshift-config
+No resources found in openshift-config namespace.
+[student@workstation ~]$ oc edit projects.config.openshift.io cluster 
+Edit cancelled, no changes made.
+[student@workstation ~]$ oc create -f proj-temp.yaml -n openshift-config
+template.template.openshift.io/project-request created
+[student@workstation ~]$ oc edit projects.
+projects.config.openshift.io   projects.project.openshift.io
+[student@workstation ~]$ oc edit projects.config.openshift.io cluster 
+project.config.openshift.io/cluster edited
+[student@workstation ~]$ oc get pods -n openshift-apiserver
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          6h5m
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-667dcd6bdb-trd69   2/2     Running   0          6h5m
+apiserver-667dcd6bdb-trd69   2/2     Terminating   0          6h5m
+apiserver-57b496556c-r2gfj   0/2     Pending       0          0s
+apiserver-57b496556c-r2gfj   0/2     Pending       0          1s
+apiserver-667dcd6bdb-trd69   1/2     Terminating   0          6h5m
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS        RESTARTS   AGE
+apiserver-57b496556c-r2gfj   0/2     Pending       0          73s
+apiserver-667dcd6bdb-trd69   1/2     Terminating   0          6h6m
+apiserver-667dcd6bdb-trd69   0/2     Terminating   0          6h7m
+apiserver-57b496556c-r2gfj   0/2     Pending       0          80s
+apiserver-57b496556c-r2gfj   0/2     Pending       0          80s
+apiserver-57b496556c-r2gfj   0/2     Init:0/1      0          80s
+apiserver-667dcd6bdb-trd69   0/2     Terminating   0          6h7m
+apiserver-667dcd6bdb-trd69   0/2     Terminating   0          6h7m
+apiserver-667dcd6bdb-trd69   0/2     Terminating   0          6h7m
+apiserver-57b496556c-r2gfj   0/2     Init:0/1      0          81s
+apiserver-57b496556c-r2gfj   0/2     PodInitializing   0          83s
+apiserver-57b496556c-r2gfj   1/2     Running           0          86s
+apiserver-57b496556c-r2gfj   1/2     Running           0          90s
+apiserver-57b496556c-r2gfj   2/2     Running           0          91s
+^C[student@workstation ~]$ oc new-project test-new
+Now using project "test-new" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc describe test-new
+error: the server doesn't have a resource type "test-new"
+[student@workstation ~]$ oc describe namespaces test-new
+Name:         test-new
+Labels:       kubernetes.io/metadata.name=test-new
+              pod-security.kubernetes.io/audit=restricted
+              pod-security.kubernetes.io/audit-version=v1.24
+              pod-security.kubernetes.io/warn=restricted
+              pod-security.kubernetes.io/warn-version=v1.24
+Annotations:  openshift.io/description: 
+              openshift.io/display-name: 
+              openshift.io/requester: jobs
+              openshift.io/sa.scc.mcs: s0:c32,c4
+              openshift.io/sa.scc.supplemental-groups: 1001000000/10000
+              openshift.io/sa.scc.uid-range: 1001000000/10000
+Status:       Active
+
+No resource quota.
+
+Resource Limits
+ Type       Resource  Min  Max  Default Request  Default Limit  Max Limit/Request Ratio
+ ----       --------  ---  ---  ---------------  -------------  -----------------------
+ Container  memory    -    -    30Mi             100Mi          -
+[student@workstation ~]$ oc get limitranges 
+NAME                  CREATED AT
+test-new-limitrange   2025-09-05T10:15:47Z
+[student@workstation ~]$ oc describe limitranges test-new-limitrange 
+Name:       test-new-limitrange
+Namespace:  test-new
+Type        Resource  Min  Max  Default Request  Default Limit  Max Limit/Request Ratio
+----        --------  ---  ---  ---------------  -------------  -----------------------
+Container   memory    -    -    30Mi             100Mi          -
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ oc delete template -n openshift-config project-request 
+template.template.openshift.io "project-request" deleted
+[student@workstation ~]$ oc create -f proj-temp.yaml -n openshift-config
+template.template.openshift.io/project-request created
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-57b496556c-r2gfj   2/2     Running   0          5m14s
+^C[student@workstation ~]$ oc edit projects.config.openshift.io cluster
+project.config.openshift.io/cluster edited
+[student@workstation ~]$ oc get pods -n openshift
+openshift
+openshift-apiserver
+openshift-apiserver-operator
+openshift-authentication
+openshift-authentication-operator
+openshift-cloud-controller-manager
+openshift-cloud-controller-manager-operator
+openshift-cloud-credential-operator
+openshift-cloud-network-config-controller
+openshift-cluster-csi-drivers
+openshift-cluster-machine-approver
+openshift-cluster-node-tuning-operator
+openshift-cluster-samples-operator
+openshift-cluster-storage-operator
+openshift-cluster-version
+openshift-config
+openshift-config-managed
+openshift-config-operator
+openshift-console
+openshift-console-operator
+openshift-console-user-settings
+[student@workstation ~]$ oc get pods -n openshift-config
+No resources found in openshift-config namespace.
+[student@workstation ~]$ oc get pods -n openshift-apiserver
+NAME                         READY   STATUS        RESTARTS   AGE
+apiserver-57b496556c-r2gfj   1/2     Terminating   0          7m28s
+apiserver-68fff7d768-klvlm   0/2     Pending       0          29s
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS        RESTARTS   AGE
+apiserver-57b496556c-r2gfj   1/2     Terminating   0          7m33s
+apiserver-68fff7d768-klvlm   0/2     Pending       0          34s
+apiserver-57b496556c-r2gfj   0/2     Terminating   0          8m18s
+apiserver-57b496556c-r2gfj   0/2     Terminating   0          8m18s
+apiserver-68fff7d768-klvlm   0/2     Pending       0          79s
+apiserver-57b496556c-r2gfj   0/2     Terminating   0          8m18s
+apiserver-57b496556c-r2gfj   0/2     Terminating   0          8m18s
+apiserver-68fff7d768-klvlm   0/2     Init:0/1      0          79s
+apiserver-68fff7d768-klvlm   0/2     Init:0/1      0          80s
+apiserver-68fff7d768-klvlm   0/2     Init:0/1      0          80s
+apiserver-68fff7d768-klvlm   0/2     PodInitializing   0          85s
+apiserver-68fff7d768-klvlm   1/2     Running           0          87s
+^C[student@workstation ~]$ oc edit projects.config.openshift.io cluster
+project.config.openshift.io/cluster edited
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-68fff7d768-klvlm   2/2     Running   0          2m12s
+apiserver-68fff7d768-klvlm   2/2     Terminating   0          3m
+apiserver-f77bbc669-z97m4    0/2     Pending       0          0s
+apiserver-f77bbc669-z97m4    0/2     Pending       0          0s
+apiserver-68fff7d768-klvlm   1/2     Terminating   0          3m5s
+[student@workstation ~]$ oc get pods -n openshift-apiserver -w
+NAME                         READY   STATUS        RESTARTS   AGE
+apiserver-68fff7d768-klvlm   1/2     Terminating   0          4m11s
+apiserver-f77bbc669-z97m4    0/2     Pending       0          70s
+apiserver-68fff7d768-klvlm   0/2     Terminating   0          4m23s
+apiserver-f77bbc669-z97m4    0/2     Pending       0          82s
+apiserver-f77bbc669-z97m4    0/2     Pending       0          82s
+apiserver-f77bbc669-z97m4    0/2     Init:0/1      0          82s
+apiserver-68fff7d768-klvlm   0/2     Terminating   0          4m24s
+apiserver-68fff7d768-klvlm   0/2     Terminating   0          4m24s
+apiserver-68fff7d768-klvlm   0/2     Terminating   0          4m24s
+apiserver-f77bbc669-z97m4    0/2     Init:0/1      0          83s
+apiserver-f77bbc669-z97m4    0/2     PodInitializing   0          86s
+apiserver-f77bbc669-z97m4    1/2     Running           0          88s
+apiserver-f77bbc669-z97m4    1/2     Running           0          93s
+apiserver-f77bbc669-z97m4    2/2     Running           0          93s
+^C[student@workstation ~]$ oc new-project test-project
+Now using project "test-project" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc describe namespaces test-project 
+Name:         test-project
+Labels:       kubernetes.io/metadata.name=test-project
+              pod-security.kubernetes.io/audit=restricted
+              pod-security.kubernetes.io/audit-version=v1.24
+              pod-security.kubernetes.io/warn=restricted
+              pod-security.kubernetes.io/warn-version=v1.24
+Annotations:  openshift.io/description: 
+              openshift.io/display-name: 
+              openshift.io/requester: jobs
+              openshift.io/sa.scc.mcs: s0:c32,c9
+              openshift.io/sa.scc.supplemental-groups: 1001010000/10000
+              openshift.io/sa.scc.uid-range: 1001010000/10000
+Status:       Active
+
+No resource quota.
+
+Resource Limits
+ Type       Resource  Min   Max    Default Request  Default Limit  Max Limit/Request Ratio
+ ----       --------  ---   ---    ---------------  -------------  -----------------------
+ Container  memory    28Mi  102Mi  30Mi             100Mi          -
+[student@workstation ~]$ vim proj-temp.yaml 
+[student@workstation ~]$ cat proj-temp.yaml 
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: ${PROJECT_NAME}-limitrange
+  spec:
+    limits:
+      - type: "Container"
+        max: 
+          memory: 102Mi
+        min:
+          memory: 28Mi
+        defaultRequest:
+          memory: 30Mi
+        default:
+          memory: 100Mi
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
 
 
