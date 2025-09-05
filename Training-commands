@@ -2478,3 +2478,14 @@ parameters:
 - name: PROJECT_REQUESTING_USER
 
 
+303  oc get clusterversions.config.openshift.io | grep -i versionid
+  304  oc get clusterversions.config.openshift.io | grep -i clusterid
+  305  oc get clusterversions.config.openshift.io | grep -i clusterID
+  306  oc get clusterversions.config.openshift.io -o yaml | grep -i clusterID
+  307  mkdir ex280-b1d661ca-7fb3-42e2-a62a-968b80672189
+  308  oc adm must-gather --dest-dir ex280-b1d661ca-7fb3-42e2-a62a-968b80672189
+  309  tar -zcvf ex280-b1d661ca-7fb3-42e2-a62a-968b80672189.tar.gz ex280-b1d661ca-7fb3-42e2-a62a-968b80672189/
+
+
+
+
