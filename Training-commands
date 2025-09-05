@@ -240,4 +240,88 @@ Warning: deleting cluster-scoped resources, not scoped to the provided namespace
 Error from server (NotFound): users.user.openshift.io "kubeadmin" not found
 [student@workstation ~]$ oc delete secret kubeadmin -n kube-system 
 secret "kubeadmin" deleted
+[student@workstation ~]$ oc whoami
+jobs
+[student@workstation ~]$ oc new-project apollo
+Now using project "apollo" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc new-project titan
+Now using project "titan" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc new-project gemini
+Now using project "gemini" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc new-project bluebook
+Now using project "bluebook" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc new-project apache
+Now using project "apache" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc policy add-role-to-user admin armstrong -n apollo 
+clusterrole.rbac.authorization.k8s.io/admin added: "armstrong"
+[student@workstation ~]$ oc policy add-role-to-user admin armstrong -n titan
+clusterrole.rbac.authorization.k8s.io/admin added: "armstrong"
+[student@workstation ~]$ oc policy add-role-to-user view collins -n apollo 
+clusterrole.rbac.authorization.k8s.io/view added: "collins"
+[student@workstation ~]$ oc get role
+rolebindingrestrictions.authorization.openshift.io
+rolebindings.authorization.openshift.io
+rolebindings.rbac.authorization.k8s.io
+roles.authorization.openshift.io
+roles.rbac.authorization.k8s.io
+[student@workstation ~]$ oc get rolebinding -o wide -n titan
+NAME                    ROLE                               AGE     USERS       GROUPS                         SERVICEACCOUNTS
+admin                   ClusterRole/admin                  2m14s   jobs                                       
+admin-0                 ClusterRole/admin                  50s     armstrong                                  
+system:deployers        ClusterRole/system:deployer        2m13s                                              titan/deployer
+system:image-builders   ClusterRole/system:image-builder   2m13s                                              titan/builder
+system:image-pullers    ClusterRole/system:image-puller    2m14s               system:serviceaccounts:titan   
+[student@workstation ~]$ oc get rolebinding -o wide -n apollo
+NAME                    ROLE                               AGE     USERS       GROUPS                          SERVICEACCOUNTS
+admin                   ClusterRole/admin                  2m40s   jobs                                        
+admin-0                 ClusterRole/admin                  90s     armstrong                                   
+system:deployers        ClusterRole/system:deployer        2m40s                                               apollo/deployer
+system:image-builders   ClusterRole/system:image-builder   2m40s                                               apollo/builder
+system:image-pullers    ClusterRole/system:image-puller    2m40s               system:serviceaccounts:apollo   
+view                    ClusterRole/view                   45s     collins                                     
 [student@workstation ~]$ 
