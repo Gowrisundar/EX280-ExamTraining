@@ -324,4 +324,42 @@ system:deployers        ClusterRole/system:deployer        2m40s                
 system:image-builders   ClusterRole/system:image-builder   2m40s                                               apollo/builder
 system:image-pullers    ClusterRole/system:image-puller    2m40s               system:serviceaccounts:apollo   
 view                    ClusterRole/view                   45s     collins                                     
+[student@workstation ~]$ oc adm groups new commander
+group.user.openshift.io/commander created
+[student@workstation ~]$ oc adm groups add-users commander woznaik
+group.user.openshift.io/commander added: "woznaik"
+[student@workstation ~]$ oc adm groups new pilot
+group.user.openshift.io/pilot created
+[student@workstation ~]$ oc adm groups add-users pilot adlerin
+group.user.openshift.io/pilot added: "adlerin"
+[student@workstation ~]$ oc adm policy add-role-to-group edit commander -n apollo
+clusterrole.rbac.authorization.k8s.io/edit added: "commander"
+[student@workstation ~]$ oc adm policy add-role-to-group edit commander -n titan
+clusterrole.rbac.authorization.k8s.io/edit added: "commander"
+[student@workstation ~]$ oc adm policy add-role-to-group view pilot -n apollo
+clusterrole.rbac.authorization.k8s.io/view added: "pilot"
+[student@workstation ~]$ oc get groups
+NAME        USERS
+commander   woznaik
+pilot       adlerin
+[student@workstation ~]$ oc get rolebindings -o wide -n apollo
+
+NAME                    ROLE                               AGE     USERS       GROUPS                          SERVICEACCOUNTS
+admin                   ClusterRole/admin                  7m      jobs                                        
+admin-0                 ClusterRole/admin                  5m50s   armstrong                                   
+edit                    ClusterRole/edit                   71s                 commander                       
+system:deployers        ClusterRole/system:deployer        7m                                                  apollo/deployer
+system:image-builders   ClusterRole/system:image-builder   7m                                                  apollo/builder
+system:image-pullers    ClusterRole/system:image-puller    7m                  system:serviceaccounts:apollo   
+view                    ClusterRole/view                   5m5s    collins                                     
+view-0                  ClusterRole/view                   32s                 pilot                           
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get rolebindings -o wide -n titan
+NAME                    ROLE                               AGE     USERS       GROUPS                         SERVICEACCOUNTS
+admin                   ClusterRole/admin                  7m      jobs                                       
+admin-0                 ClusterRole/admin                  5m36s   armstrong                                  
+edit                    ClusterRole/edit                   79s                 commander                      
+system:deployers        ClusterRole/system:deployer        6m59s                                              titan/deployer
+system:image-builders   ClusterRole/system:image-builder   6m59s                                              titan/builder
+system:image-pullers    ClusterRole/system:image-puller    7m                  system:serviceaccounts:titan   
 [student@workstation ~]$ 
