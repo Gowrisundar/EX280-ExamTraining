@@ -1122,4 +1122,280 @@ Events:
   Normal  Pulled          2m9s   kubelet            Container image "quay.io/redhattraining/hello-world-nginx@sha256:7f99ece5f39bf8d5d76a43cd9104a8d0a39f7135821b94bc1ebdc39cdc6dd63b" already present on machine
   Normal  Created         2m9s   kubelet            Created container qed
   Normal  Started         2m9s   kubelet            Started container qed
+[student@workstation ~]$ oc create sa ex-280-sa
+serviceaccount/ex-280-sa created
+[student@workstation ~]$ oc project
+Using project "apples" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc adm po
+pod-network  (Manage pod network)
+policy       (Manage cluster authorization and security policy)
+[student@workstation ~]$ oc adm policy add-scc-to-
+add-scc-to-group  (Add a security context constraint to groups)
+add-scc-to-user   (Add a security context constraint to users or a service account)
+[student@workstation ~]$ oc adm policy add-scc-to-user anyuid -z ex-280-sa
+clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "ex-280-sa"
+[student@workstation ~]$ podman search nginx
+NAME                                                          DESCRIPTION
+registry.access.redhat.com/ubi8/nginx-118                     Platform for running nginx 1.18 or building...
+registry.access.redhat.com/ubi9/nginx-120                     rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.access.redhat.com/ubi8/nginx-122                     rhcc_registry.access.redhat.com_ubi8/nginx-1...
+registry.access.redhat.com/ubi9/nginx-122                     rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.access.redhat.com/ubi9/nginx-124                     rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.access.redhat.com/ubi8/nginx-124                     rhcc_registry.access.redhat.com_ubi8/nginx-1...
+registry.access.redhat.com/ubi10/nginx-126                    rhcc_registry.access.redhat.com_ubi10/nginx-...
+registry.access.redhat.com/ubi9/nginx-126                     rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.access.redhat.com/ubi8/nginx-120                     Platform for running nginx 1.20 or building...
+registry.access.redhat.com/rhscl/nginx-110-rhel7              Nginx container image that delivers an nginx...
+registry.access.redhat.com/rhscl/nginx-16-rhel7               Nginx 1.6 server and a reverse proxy server
+registry.access.redhat.com/rhscl/nginx-18-rhel7               Nginx 1.8 server and a reverse proxy server
+registry.access.redhat.com/rhscl/nginx-112-rhel7              Nginx is a web server and a reverse proxy se...
+registry.access.redhat.com/ubi7/nginx-118                     Platform for running nginx 1.18 or building...
+registry.access.redhat.com/ubi7/nginx-120                     Platform for running nginx 1.20 or building...
+registry.access.redhat.com/rhscl/nginx-114-rhel7              Nginx is a web server and a reverse proxy se...
+registry.access.redhat.com/3scale-amp20/apicast-gateway       3scale's API gateway (APIcast) is an OpenRes...
+registry.access.redhat.com/3scale-amp23/apicast-gateway       3scale's API gateway (APIcast) is an OpenRe...
+registry.access.redhat.com/rhamp10/apicast-gateway            3scale's API gateway (APIcast) is an OpenRes...
+registry.access.redhat.com/3scale-amp20-beta/apicast-gateway  3scale's API gateway (APIcast) is an OpenRes...
+registry.access.redhat.com/3scale-amp25/apicast-gateway       3scale's API gateway (APIcast) is an OpenRes...
+registry.access.redhat.com/3scale-amp21/apicast-gateway       3scale AMP image used for API gateway
+registry.access.redhat.com/3scale-amp24/apicast-gateway       No description
+registry.access.redhat.com/rhmap44/wildcard-proxy             RHMAP Docker image that provides mapping and...
+registry.access.redhat.com/rhmap45/wildcard-proxy             RHMAP image that provides mapping and proxy...
+registry.redhat.io/rhel8/nginx-116                            Platform for running nginx 1.16 or building...
+registry.redhat.io/ubi8/nginx-118                             Platform for running nginx 1.18 or building...
+registry.redhat.io/rhel8/nginx-120                            Platform for running nginx 1.20 or building...
+registry.redhat.io/ubi9/nginx-120                             rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.redhat.io/ubi8/nginx-122                             rhcc_registry.access.redhat.com_ubi8/nginx-1...
+registry.redhat.io/rhel9/nginx-122                            rhcc_registry.access.redhat.com_rhel9/nginx-...
+registry.redhat.io/ubi9/nginx-122                             rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.redhat.io/ubi9/nginx-124                             rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.redhat.io/rhel8/nginx-124                            rhcc_registry.access.redhat.com_rhel8/nginx-...
+registry.redhat.io/ubi8/nginx-124                             rhcc_registry.access.redhat.com_ubi8/nginx-1...
+registry.redhat.io/rhel10/nginx-126                           rhcc_registry.access.redhat.com_rhel10/nginx...
+registry.redhat.io/ubi10/nginx-126                            rhcc_registry.access.redhat.com_ubi10/nginx-...
+registry.redhat.io/ubi9/nginx-126                             rhcc_registry.access.redhat.com_ubi9/nginx-1...
+registry.redhat.io/rhel8/nginx-114                            Nginx is a web server and a reverse proxy se...
+registry.redhat.io/rhel8/nginx-118                            Platform for running nginx 1.18 or building...
+registry.redhat.io/ubi8/nginx-120                             Platform for running nginx 1.20 or building...
+registry.redhat.io/rhel9/nginx-120                            rhcc_registry.access.redhat.com_rhel9/nginx-...
+registry.redhat.io/rhel8/nginx-122                            rhcc_registry.access.redhat.com_rhel8/nginx-...
+registry.redhat.io/rhel9/nginx-124                            rhcc_registry.access.redhat.com_rhel9/nginx-...
+registry.redhat.io/rhel9/nginx-126                            rhcc_registry.access.redhat.com_rhel9/nginx-...
+registry.redhat.io/rhscl/nginx-110-rhel7                      Nginx container image that delivers an nginx...
+registry.redhat.io/rhscl/nginx-16-rhel7                       Nginx 1.6 server and a reverse proxy server
+registry.redhat.io/rhscl/nginx-18-rhel7                       Nginx 1.8 server and a reverse proxy server
+registry.redhat.io/rhscl/nginx-112-rhel7                      Nginx is a web server and a reverse proxy se...
+registry.redhat.io/rhscl/nginx-116-rhel7                      Platform for running nginx 1.16 or building...
+docker.io/library/nginx                                       Official build of Nginx.
+docker.io/nginx/nginx-ingress                                 NGINX and  NGINX Plus Ingress Controllers fo...
+docker.io/nginx/nginx-prometheus-exporter                     NGINX Prometheus Exporter for NGINX and NGIN...
+docker.io/nginx/unit                                          This repository is retired, use the Docker o...
+docker.io/nginx/nginx-ingress-operator                        NGINX Ingress Operator for NGINX and NGINX P...
+docker.io/nginx/docker-extension                              
+docker.io/nginx/nginx-quic-qns                                NGINX QUIC interop
+docker.io/nginx/nginxaas-loadbalancer-kubernetes              
+docker.io/nginx/unit-preview                                  Unit preview features
+docker.io/bitnami/nginx                                       Bitnami container image for NGINX
+docker.io/ubuntu/nginx                                        Nginx, a high-performance reverse proxy & we...
+docker.io/bitnamicharts/nginx                                 Bitnami Helm chart for NGINX Open Source
+docker.io/kasmweb/nginx                                       An Nginx image based off nginx:alpine and in...
+docker.io/rancher/nginx                                       
+docker.io/linuxserver/nginx                                   An Nginx container, brought to you by LinuxS...
+docker.io/dtagdevsec/nginx                                    T-Pot Nginx
+docker.io/paketobuildpacks/nginx                              
+docker.io/vmware/nginx                                        
+docker.io/chainguard/nginx                                    Build, ship and run secure software with Cha...
+docker.io/gluufederation/nginx                                A customized NGINX image containing a consu...
+docker.io/intel/nginx                                         
+docker.io/antrea/nginx                                        Nginx server used for Antrea e2e testing
+docker.io/circleci/nginx                                      This image is for internal use
+docker.io/docksal/nginx                                       Nginx service image for Docksal
+docker.io/corpusops/nginx                                     https://github.com/corpusops/docker-images/
+[student@workstation ~]$ podman search nginx | grep docker
+docker.io/library/nginx                                       Official build of Nginx.
+docker.io/nginx/nginx-ingress                                 NGINX and  NGINX Plus Ingress Controllers fo...
+docker.io/nginx/nginx-prometheus-exporter                     NGINX Prometheus Exporter for NGINX and NGIN...
+docker.io/nginx/unit                                          This repository is retired, use the Docker o...
+docker.io/nginx/nginx-ingress-operator                        NGINX Ingress Operator for NGINX and NGINX P...
+docker.io/nginx/docker-extension                              
+docker.io/nginx/nginx-quic-qns                                NGINX QUIC interop
+docker.io/nginx/nginxaas-loadbalancer-kubernetes              
+docker.io/nginx/unit-preview                                  Unit preview features
+docker.io/bitnami/nginx                                       Bitnami container image for NGINX
+docker.io/ubuntu/nginx                                        Nginx, a high-performance reverse proxy & we...
+docker.io/bitnamicharts/nginx                                 Bitnami Helm chart for NGINX Open Source
+docker.io/kasmweb/nginx                                       An Nginx image based off nginx:alpine and in...
+docker.io/rancher/nginx                                       
+docker.io/linuxserver/nginx                                   An Nginx container, brought to you by LinuxS...
+docker.io/dtagdevsec/nginx                                    T-Pot Nginx
+docker.io/paketobuildpacks/nginx                              
+docker.io/vmware/nginx                                        
+docker.io/chainguard/nginx                                    Build, ship and run secure software with Cha...
+docker.io/gluufederation/nginx                                A customized NGINX image containing a consu...
+docker.io/intel/nginx                                         
+docker.io/antrea/nginx                                        Nginx server used for Antrea e2e testing
+docker.io/circleci/nginx                                      This image is for internal use
+docker.io/docksal/nginx                                       Nginx service image for Docksal
+docker.io/corpusops/nginx                                     https://github.com/corpusops/docker-images/
+[student@workstation ~]$ oc new-app --name=oranges --image=docker.io/library/nginx
+error: unable to locate any local docker images with name "docker.io/library/nginx"
+
+The 'oc new-app' command will match arguments to the following types:
+
+  1. Images tagged into image streams in the current project or the 'openshift' project
+     - if you don't specify a tag, we'll add ':latest'
+  2. Images in the container storage, on remote registries, or on the local container engine
+  3. Templates in the current project or the 'openshift' project
+  4. Git repository URLs or local paths that point to Git repositories
+
+--allow-missing-images can be used to point to an image that does not exist yet.
+
+See 'oc new-app -h' for examples.
+[student@workstation ~]$ oc new-app --name=oranges --image=docker.io/library/nginx:latest
+error: unable to locate any local docker images with name "docker.io/library/nginx:latest"
+
+The 'oc new-app' command will match arguments to the following types:
+
+  1. Images tagged into image streams in the current project or the 'openshift' project
+     - if you don't specify a tag, we'll add ':latest'
+  2. Images in the container storage, on remote registries, or on the local container engine
+  3. Templates in the current project or the 'openshift' project
+  4. Git repository URLs or local paths that point to Git repositories
+
+--allow-missing-images can be used to point to an image that does not exist yet.
+
+See 'oc new-app -h' for examples.
+[student@workstation ~]$ oc new-app --name gitlab \
+> 
+error: You must specify one or more images, image streams, templates, or source code locations to create an application.
+
+To list all local templates and image streams, use:
+
+  oc new-app -L
+
+To search templates, image streams, and container images that match the arguments provided, use:
+
+  oc new-app -S php
+  oc new-app -S --template=rails
+  oc new-app -S --image-stream=mysql
+  oc new-app -S --image=registry.access.redhat.com/ubi8/python-38
+
+For details on how to use the results from those searches to provide images, image streams, templates, or source code locations as inputs into 'oc new-app', use:
+
+  oc help new-app
+
+
+See 'oc new-app -h' for help and examples
+[student@workstation ~]$ oc new-app --name=oranges --image=oc new-app --name gitlab \
+> --image registry.ocp4.example.com:8443/redhattraining/git
+error: unable to locate any local docker images with name "oc"
+error: unable to locate any local docker images with name "registry.ocp4.example.com:8443/redhattraining/git"
+error:  local file access failed with: stat new-app: no such file or directory
+error: unable to locate any images in image streams, templates loaded in accessible projects, template files, local docker images with name "new-app"
+
+Argument 'new-app' was classified as an image, image~source, or loaded template reference.
+
+The 'oc new-app' command will match arguments to the following types:
+
+  1. Images tagged into image streams in the current project or the 'openshift' project
+     - if you don't specify a tag, we'll add ':latest'
+  2. Images in the container storage, on remote registries, or on the local container engine
+  3. Templates in the current project or the 'openshift' project
+  4. Git repository URLs or local paths that point to Git repositories
+
+--allow-missing-images can be used to point to an image that does not exist yet.
+
+See 'oc new-app -h' for examples.
+[student@workstation ~]$ oc new-app --name=oranges --image=registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0
+--> Found container image 3290b2e (9 years old) from registry.ocp4.example.com:8443 for "registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0"
+
+    * An image stream tag will be created as "oranges:8.4.3-ce.0" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "oranges" created
+    deployment.apps "oranges" created
+    error: services "oranges" already exists
+--> Failed
+[student@workstation ~]$ oc get all
+\Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
+NAME                           READY   STATUS              RESTARTS   AGE
+pod/oranges-7cf8c4c5c4-n7lc2   0/1     ContainerCreating   0          15s
+
+NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)             AGE
+service/oranges   ClusterIP   172.30.43.76   <none>        8080/TCP,8888/TCP   148m
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/oranges   0/1     1            0           15s
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/oranges-7cf8c4c5c4   1         1         0       15s
+replicaset.apps/oranges-cd4d7c55c    1         0         0       15s
+
+NAME                                     IMAGE REPOSITORY                                                  TAGS         UPDATED
+imagestream.image.openshift.io/oranges   image-registry.openshift-image-registry.svc:5000/apples/oranges   8.4.3-ce.0   15 seconds ago
+
+NAME                               HOST/PORT                       PATH   SERVICES   PORT       TERMINATION   WILDCARD
+route.route.openshift.io/oranges   oranges.apps.ocp4.example.com          oranges    8080-tcp                 None
+[student@workstation ~]$ oc get pods
+NAME                       READY   STATUS    RESTARTS     AGE
+oranges-7cf8c4c5c4-n7lc2   1/1     Running   1 (3s ago)   48s
+[student@workstation ~]$ oc delete all
+error: resource(s) were provided, but no name was specified
+[student@workstation ~]$ oc delete all --se
+--selector  (Selector (label query) to filter on, supports '=', '==', and '!='.(e.g. -l key…)
+--server    (The address and port of the Kubernetes API server)
+[student@workstation ~]$ oc delete all --selector=app=oranges
+service "oranges" deleted
+deployment.apps "oranges" deleted
+Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
+imagestream.image.openshift.io "oranges" deleted
+route.route.openshift.io "oranges" deleted
+[student@workstation ~]$ oc get all
+Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
+No resources found in apples namespace.
+[student@workstation ~]$ oc new-app --name=oranges --image=registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0
+--> Found container image 3290b2e (9 years old) from registry.ocp4.example.com:8443 for "registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0"
+
+    * An image stream tag will be created as "oranges:8.4.3-ce.0" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "oranges" created
+    deployment.apps "oranges" created
+    service "oranges" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/oranges' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc get pods
+NAME                       READY   STATUS    RESTARTS   AGE
+oranges-7cf8c4c5c4-hxqbs   1/1     Running   0          6s
+[student@workstation ~]$ oc get pods -W
+error: unknown shorthand flag: 'W' in -W
+See 'oc get --help' for usage.
+[student@workstation ~]$ oc get pods -w
+NAME                       READY   STATUS    RESTARTS     AGE
+oranges-7cf8c4c5c4-hxqbs   1/1     Running   1 (7s ago)   14s
+oranges-7cf8c4c5c4-hxqbs   0/1     Error     1 (8s ago)   15s
+oranges-7cf8c4c5c4-hxqbs   0/1     CrashLoopBackOff   1 (16s ago)   30s
+oranges-7cf8c4c5c4-hxqbs   1/1     Running            2 (16s ago)   30s
+oranges-7cf8c4c5c4-hxqbs   0/1     Error              2 (23s ago)   37s
+oranges-7cf8c4c5c4-hxqbs   0/1     CrashLoopBackOff   2 (16s ago)   52s
+oranges-7cf8c4c5c4-hxqbs   1/1     Running            3 (29s ago)   65s
+oranges-7cf8c4c5c4-hxqbs   0/1     Error              3 (35s ago)   71s
+^C[student@workstation ~]$ oc set sa deployment/oranges ex-280-sa
+deployment.apps/oranges serviceaccount updated
+[student@workstation ~]$ oc get pods
+NAME                       READY   STATUS    RESTARTS   AGE
+oranges-74d5ddb654-m4mh9   1/1     Running   0          22s
+[student@workstation ~]$ oc exp
+explain  (Get documentation for a resource)
+expose   (Expose a replicated application as a service or route)
+[student@workstation ~]$ oc expose service oranges 
+route.route.openshift.io/oranges exposed
+[student@workstation ~]$ oc edit service oranges 
+Edit cancelled, no changes made.
+[student@workstation ~]$ 
+
+
+
 
