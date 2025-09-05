@@ -2486,6 +2486,19 @@ parameters:
   308  oc adm must-gather --dest-dir ex280-b1d661ca-7fb3-42e2-a62a-968b80672189
   309  tar -zcvf ex280-b1d661ca-7fb3-42e2-a62a-968b80672189.tar.gz ex280-b1d661ca-7fb3-42e2-a62a-968b80672189/
 
+student@workstation ~]$ oc project space 
+Now using project "space" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get deployment
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+gamma   1/1     1            1           114m
+[student@workstation ~]$ oc describe deployment gamma | grep -i libe
+[student@workstation ~]$ oc describe deployment gamma | grep -i live
+[student@workstation ~]$ oc set probe --liveness --open-tcp 8080 --initial-delay-seconds 3 --timeout-seconds 10 deployment gamma
+deployment.apps/gamma probes updated
+[student@workstation ~]$ oc describe deployment gamma | grep -i live
+    Liveness:     tcp-socket :8080 delay=3s timeout=10s period=10s #success=1 #failure=3
+[student@workstation ~]$ 
+
 
 
 
