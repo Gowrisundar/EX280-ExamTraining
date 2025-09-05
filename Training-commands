@@ -1395,6 +1395,30 @@ route.route.openshift.io/oranges exposed
 [student@workstation ~]$ oc edit service oranges 
 Edit cancelled, no changes made.
 [student@workstation ~]$ 
+student@workstation ~]$ oc get events
+LAST SEEN   TYPE      REASON              OBJECT                         MESSAGE
+160m        Warning   FailedScheduling    pod/mercury-57bf74444-5qvp4    0/1 nodes are available: 1 Insufficient memory. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod..
+16m         Warning   FailedScheduling    pod/mercury-57bf74444-5qvp4    0/1 nodes are available: 1 Insufficient memory. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod..
+160m        Normal    SuccessfulCreate    replicaset/mercury-57bf74444   Created pod: mercury-57bf74444-5qvp4
+160m        Normal    ScalingReplicaSet   deployment/mercury             Scaled up replica set mercury-57bf74444 to 1
+[student@workstation ~]$ oc edit deployment mercury 
+deployment.apps/mercury edited
+[student@workstation ~]$ oc get pods
+NAME                       READY   STATUS              RESTARTS   AGE
+mercury-57bf74444-5qvp4    0/1     Pending             0          161m
+mercury-6fc977f8f7-467kx   0/1     ContainerCreating   0          19s
+[student@workstation ~]$ oc get pods -w
+NAME                       READY   STATUS              RESTARTS   AGE
+mercury-57bf74444-5qvp4    0/1     Pending             0          161m
+mercury-6fc977f8f7-467kx   0/1     ContainerCreating   0          23s
+mercury-6fc977f8f7-467kx   1/1     Running             0          32s
+mercury-57bf74444-5qvp4    0/1     Terminating         0          161m
+mercury-57bf74444-5qvp4    0/1     Terminating         0          161m
+^C[student@workstation ~]$ oc get pods
+NAME                       READY   STATUS    RESTARTS   AGE
+mercury-6fc977f8f7-467kx   1/1     Running   0          48s
+[student@workstation ~]$ 
+
 
 
 
